@@ -1,0 +1,2 @@
+model_checkpoint_path: "Attractivergb_128x128_checkpoint"
+all_model_checkpoint_paths: "Attractivergb_128x128_checkpoint"

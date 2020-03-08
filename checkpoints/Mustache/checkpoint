@@ -1,0 +1,2 @@
+model_checkpoint_path: "Mustachergb_128x128_checkpoint"
+all_model_checkpoint_paths: "Mustachergb_128x128_checkpoint"

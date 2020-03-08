@@ -1,0 +1,2 @@
+model_checkpoint_path: "Mouth_Slightly_Openrgb_128x128_checkpoint"
+all_model_checkpoint_paths: "Mouth_Slightly_Openrgb_128x128_checkpoint"

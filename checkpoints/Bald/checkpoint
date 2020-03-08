@@ -1,0 +1,2 @@
+model_checkpoint_path: "Baldrgb_128x128_checkpoint"
+all_model_checkpoint_paths: "Baldrgb_128x128_checkpoint"

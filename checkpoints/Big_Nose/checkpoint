@@ -1,0 +1,2 @@
+model_checkpoint_path: "Big_Nosergb_128x128_checkpoint"
+all_model_checkpoint_paths: "Big_Nosergb_128x128_checkpoint"

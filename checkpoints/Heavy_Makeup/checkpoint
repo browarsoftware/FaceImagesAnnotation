@@ -1,0 +1,2 @@
+model_checkpoint_path: "Heavy_Makeuprgb_128x128_checkpoint"
+all_model_checkpoint_paths: "Heavy_Makeuprgb_128x128_checkpoint"

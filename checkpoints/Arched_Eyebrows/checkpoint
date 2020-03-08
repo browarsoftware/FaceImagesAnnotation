@@ -1,0 +1,2 @@
+model_checkpoint_path: "Arched_Eyebrowsrgb_128x128_checkpoint"
+all_model_checkpoint_paths: "Arched_Eyebrowsrgb_128x128_checkpoint"
