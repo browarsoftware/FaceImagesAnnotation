@@ -1,13 +1,15 @@
+# Author: Tomasz Hachaj
+# run first: Eigenfaces.py
+# generates eigenfaces
+# requires CelebA dataset: http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
+# import the necessary packages
+
 import numpy as np
 import cv2
 import os
 import DirectoryFunctions
-# http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
-#path = 'e:\\Projects\\python\\img_align_celeba'
 
-#path = 'e:\\Projects\\python\\same_twarze'
 path = 'd:/Projects/Python/PycharmProjects/twarze_align'
-#path = 'd:/Projects/Python/PycharmProjects/same_twarze'
 
 files = []
 # r=root, d=directories, f = files
@@ -50,8 +52,7 @@ for a in range(len(files)):
     img_help -= mean_face
 
     result = np.matmul(v_correct.transpose(), img_help)
-    result_features = result#(1 / np.sqrt(w_correct_use)) * result
-    #result_features = (1 / np.sqrt(w_correct_use)) * result
+    result_features = result
     text_to_append = ''
     for b in range(result.shape[0]):
         if b > 0:

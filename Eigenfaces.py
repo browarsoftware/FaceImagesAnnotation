@@ -1,16 +1,16 @@
+# Author: Tomasz Hachaj
+# run first: face_align_all.py
+# generates eigenfaces
+# requires CelebA dataset: http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
+# import the necessary packages
+
 import cv2
 import numpy as np
 import os
-# http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
-#path = 'e:\\Projects\\python\\img_align_celeba'
-
-#path = 'e:\\Projects\\python\\same_twarze'
 path = 'd:/Projects/Python/PycharmProjects/twarze_align'
-#path = 'd:/Projects/Python/PycharmProjects/same_twarze'
 
 
 files = []
-#how_many_images = 100
 how_many_images = 50000
 variance_explained = 0.99
 
@@ -21,7 +21,6 @@ for r, d, f in os.walk(path):
       files.append(os.path.join(r, file))
 
 print(len(files))
-#how_many_images = len(files)
 a = 0
 offset = 0
 img = cv2.imread(files[0 + offset])

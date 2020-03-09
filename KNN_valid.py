@@ -1,7 +1,14 @@
+# Author: Tomasz Hachaj
+# run first: KNN.py
+# validates KNN model
+# requires CelebA dataset: http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
+# import the necessary packages
+
+
 import numpy as np
 import DirectoryFunctions
-how_many_images_test = 180000
-how_many_images_valid = 16095
+how_many_images_test = #INSERT HERE
+how_many_images_valid = #INSERT HERE
 
 from numpy import genfromtxt
 print('loading data')
@@ -23,8 +30,6 @@ valid = np.load("pca.res//knn_valid_dataset.npy")
 train = train[:,3:train.shape[1]]
 valid = valid[:,3:valid.shape[1]]
 
-#X = [[0,0], [1,1], [2,5], [3,5]]
-#y = [0, 0, 1, 1]
 from sklearn.neighbors import KNeighborsClassifier
 for feature_id in range(len(features_names)):
     print(features_names[feature_id])

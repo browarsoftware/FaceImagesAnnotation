@@ -1,9 +1,11 @@
+# Author: Tomasz Hachaj
+# run first: face_align_all.py
+# performs training and validation of NN 40
+# requires CelebA dataset: http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
+# import the necessary packages
+
 from __future__ import absolute_import, division, print_function, unicode_literals
-
-# TensorFlow and tf.keras
 import tensorflow as tf
-
-
 # Helper libraries
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,15 +18,9 @@ import os
 path = 'd:\\Projects\\Python\\PycharmProjects\\twarze_align'
 #PIL in pillow package
 files = []
-#how_many_images = 20000
 how_many_images_test = 180000
 how_many_images_valid = 20000
 epochs_count = 20
-
-
-
-#how_many_images = 4500
-#variance_explained = 0.95
 
 # r=root, d=directories, f = files
 for r, d, f in os.walk(path):
@@ -34,7 +30,6 @@ for r, d, f in os.walk(path):
 files = np.array(files)
 from numpy import genfromtxt
 my_data = genfromtxt('d:\\Projects\\Python\\PycharmProjects\\list_attr_celeba_align196095.txt',skip_header=1, delimiter=',', dtype=None, encoding=None)
-#my_data = my_data[0:100000,:]
 features_names = ("X5_o_Clock_Shadow", "Arched_Eyebrows", "Attractive", "Bags_Under_Eyes","Bald", "Bangs",
          "Big_Lips", "Big_Nose", "Black_Hair", "Blond_Hair", "Blurry", "Brown_Hair", "Bushy_Eyebrows",
          "Chubby", "Double_Chin", "Eyeglasses", "Goatee", "Gray_Hair", "Heavy_Makeup",
@@ -70,7 +65,6 @@ for feature_id in range(40):
     BATCH_SIZE = 32
     IMG_HEIGHT = 128
     IMG_WIDTH = 128
-    #STEPS_PER_EPOCH = np.ceil(image_count/BATCH_SIZE)
 
     print('image generator train')
     train_generator = image_generator.flow_from_dataframe(
@@ -78,7 +72,6 @@ for feature_id in range(40):
             directory='data/train',
             x_col="filename",
             y_col="class",
-            #color_mode='grayscale',
             target_size=(IMG_HEIGHT, IMG_WIDTH),
             batch_size=how_many_images_test,
             class_mode='raw',
@@ -92,30 +85,12 @@ for feature_id in range(40):
             directory='data/train',
             x_col="filename",
             y_col="class",
-            #color_mode='grayscale',
             target_size=(IMG_HEIGHT, IMG_WIDTH),
             batch_size=how_many_images_valid,
             class_mode='raw',
             shuffle=False)
     image_batch_valid, label_batch_valid = next(valid_generator)
-    '''
-    model = keras.Sequential([
-        keras.layers.Flatten(input_shape=(109, 80, 3)),
-        keras.layers.Dense(128, activation='relu'),
-    
-        keras.layers.Dense(64, activation='relu'),
-        #keras.layers.Dropout(0.25),
-        keras.layers.Dense(32, activation='relu'),
-        #keras.layers.Dropout(0.25),
-    
-        keras.layers.Dense(16, activation='relu'),
-        keras.layers.Dense(8, activation='relu'),
-    
-        #keras.layers.Dropout(0.25),
-        #keras.layers.Dense(64, activation='relu'),
-        keras.layers.Dense(2, activation='softmax')
-    ])
-    '''
+
     from tensorflow import keras
     model = keras.Sequential([
         keras.layers.Flatten(input_shape=(128, 128, 3)),
@@ -152,11 +127,7 @@ for feature_id in range(40):
     model.fit(image_batch_train, label_batch_train,
               callbacks=[callback], epochs=epochs_count, batch_size = BATCH_SIZE)
 
-    #NEW ADDED
     model.save_weights('./checkpoints/' + features_names[feature_id] + '/NEW__' + features_names[feature_id] + 'rgb_128x128_checkpoint')
-    #model.load_weights('./checkpoints/my_checkpoint')
-
-    #pc = model.predict_classes(image_batch_train)
     pc = model.predict_classes(image_batch_valid)
     print(pc.shape)
     DirectoryFunctions.append_line_to_file('./results/' + features_names[feature_id] + '.csv','id,predict,actual')
@@ -175,54 +146,3 @@ for feature_id in range(40):
     del image_generator
     import gc
     gc.collect()
-    if False:
-        #test_loss, test_acc = model.evaluate(image_batch,  label_batch, verbose=2)
-        #print()
-        class_names = {'Woman','Man'}
-
-        import pandas as pd
-        #print('\nTest accuracy:', test_acc)
-
-        pc = model.predict_classes(image_batch_train)
-        con_mat = tf.math.confusion_matrix(pc, label_batch_train).numpy()
-        con_mat_norm = np.around(con_mat.astype('float') / con_mat.sum(axis=1)[:, np.newaxis], decimals=2)
-        con_mat_df = pd.DataFrame(con_mat_norm,
-                                  index=class_names,
-                                  columns=class_names)
-
-        import seaborn as sns
-
-        figure = plt.figure(figsize=(8, 8))
-        sns.heatmap(con_mat_df, annot=True,cmap=plt.cm.Blues)
-        plt.tight_layout()
-        plt.ylabel('True label')
-        plt.xlabel('Predicted label')
-        plt.show()
-
-
-
-
-
-
-
-        pc = model.predict_classes(image_batch_valid)
-        con_mat = tf.math.confusion_matrix(pc, label_batch_valid).numpy()
-        con_mat_norm = np.around(con_mat.astype('float') / con_mat.sum(axis=1)[:, np.newaxis], decimals=2)
-        con_mat_df = pd.DataFrame(con_mat_norm,
-                                  index=class_names,
-                                  columns=class_names)
-
-        import seaborn as sns
-
-        figure = plt.figure(figsize=(8, 8))
-        sns.heatmap(con_mat_df, annot=True,cmap=plt.cm.Blues)
-        plt.tight_layout()
-        plt.ylabel('True label')
-        plt.xlabel('Predicted label')
-        plt.show()
-        '''
-        #RGB 128
-        #0.95 0.05
-        #0.07 0.93
-        
-        '''

@@ -20,14 +20,7 @@ from keras.callbacks import ModelCheckpoint
 from keras.applications.mobilenet_v2 import MobileNetV2
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 
-# %matplotlib inline
-
-# COLAB-ONLY: load/save content from drive
-
 save_path = 'd://Projects//Python//PycharmProjects//DLIB_Pytorch//checkpoints//'
-#model = keras.models.load_model('d:\\Projects\\Python\\PycharmProjects\\DLIB_Pytorch\\MyNetworkTrain\\checkpoints\\weights-UL19_FC40-MobileNetV20.91.hdf5')
-
-
 
 from numpy import genfromtxt
 '''
@@ -40,127 +33,42 @@ features_names = ("X5_o_Clock_Shadow", "Arched_Eyebrows", "Attractive", "Bags_Un
          "Wearing_Necklace", "Wearing_Necktie","Young")
 '''
 my_files = genfromtxt('d:\\Projects\\Python\\PycharmProjects\\celeba-dataset\\list_attr_celeba_test_files.csv',skip_header=1, delimiter=',', dtype=None, encoding=None)
-#print(my_data.shape)
-#print(my_data[:, 20])
 
-if False:
-    mf = my_files[0]
+a = 0
+
+model = keras.models.load_model(
+    'd:\\Projects\\Python\\PycharmProjects\\DLIB_Pytorch\\MyNetworkTrain\\checkpoints\\weights-FC37-MobileNetV2-0.92.hdf5')
+my_data = genfromtxt('d:\\Projects\\Python\\PycharmProjects\\celeba-dataset\\list_attr_celeba_test_37.csv',
+                     skip_header=1, delimiter=',', dtype=None, encoding=None)
+confusion_matrix = np.zeros([my_data.shape[1], 4], dtype=int)
+for mf in my_files:
     file_name = 'd:\\Projects\\Python\\PycharmProjects\\celeba-dataset\\img_align_celeba\\' + mf;
     print(mf)
     img = cv2.imread(file_name)
-    img = cv2.resize(img, (224,224)) / 255
-    #horizontal flip
-    img = cv2.flip(img, 0 )
-
+    img = cv2.resize(img, (224,224), interpolation=cv2.INTER_NEAREST) / 255
     img = np.expand_dims(img, axis=0)
     vv = model.predict(img)
+    vv = np.round(vv).astype('int')
     #TP, TN, FN, FP
     #import math
     for b in range(vv.shape[1]):
-            print(str(vv[0, b]) + " " + str(round(vv[0, b])) + " " + str())
+        if abs(my_data[a, b] - (vv[0, b])) < 0.001:
+            if my_data[a, b] > 0.001:
+                #TP = 1
+                confusion_matrix[b, 0] = confusion_matrix[b, 0] + 1
+            else:
+                #TN = 0
+                confusion_matrix[b, 1] = confusion_matrix[b, 1] + 1
+        if abs(my_data[a,b] - (vv[0,b])) >= 0.001:
+            if my_data[a,b] > 0.001:
+                #FN = 1
+                confusion_matrix[b, 2] = confusion_matrix[b, 2] + 1
+            else:
+                #FP = 1
+                confusion_matrix[b, 3] = confusion_matrix[b, 3] + 1
+        #print(str(round(vv[0,b])) + " " + str(my_data[0,b]))
+    a = a + 1
+print(confusion_matrix)
+a = np.asarray(confusion_matrix)
+np.savetxt("ul19_keras_confusion_matrix_37.csv", a, delimiter=",")
 
-a = 0
-if True:
-    model = keras.models.load_model(
-        'd:\\Projects\\Python\\PycharmProjects\\DLIB_Pytorch\\MyNetworkTrain\\checkpoints\\weights-FC37-MobileNetV2-0.92.hdf5')
-    my_data = genfromtxt('d:\\Projects\\Python\\PycharmProjects\\celeba-dataset\\list_attr_celeba_test_37.csv',
-                         skip_header=1, delimiter=',', dtype=None, encoding=None)
-    confusion_matrix = np.zeros([my_data.shape[1], 4], dtype=int)
-    for mf in my_files:
-        #file_name = 'd:\\Projects\\Python\\PycharmProjects\\celeba-dataset\\img_align_celeba\\' + my_files[a];
-        file_name = 'd:\\Projects\\Python\\PycharmProjects\\celeba-dataset\\img_align_celeba\\' + mf;
-        print(mf)
-        img = cv2.imread(file_name)
-        img = cv2.resize(img, (224,224), interpolation=cv2.INTER_NEAREST) / 255
-        #img = cv2.flip(img, 1)
-        img = np.expand_dims(img, axis=0)
-        vv = model.predict(img)
-        vv = np.round(vv).astype('int')
-        #TP, TN, FN, FP
-        #import math
-        for b in range(vv.shape[1]):
-            if abs(my_data[a, b] - (vv[0, b])) < 0.001:
-                if my_data[a, b] > 0.001:
-                    #TP = 1
-                    confusion_matrix[b, 0] = confusion_matrix[b, 0] + 1
-                else:
-                    #TN = 0
-                    confusion_matrix[b, 1] = confusion_matrix[b, 1] + 1
-            if abs(my_data[a,b] - (vv[0,b])) >= 0.001:
-                if my_data[a,b] > 0.001:
-                    #FN = 1
-                    confusion_matrix[b, 2] = confusion_matrix[b, 2] + 1
-                else:
-                    #FP = 1
-                    confusion_matrix[b, 3] = confusion_matrix[b, 3] + 1
-            #print(str(round(vv[0,b])) + " " + str(my_data[0,b]))
-        a = a + 1
-    print(confusion_matrix)
-    a = np.asarray(confusion_matrix)
-    np.savetxt("ul19_keras_confusion_matrix_37.csv", a, delimiter=",")
-
-
-if False:
-    my_data = genfromtxt('d:\\Projects\\Python\\PycharmProjects\\celeba-dataset\\list_attr_celeba_test.csv',
-                         skip_header=1, delimiter=',', dtype=None, encoding=None)
-    model = keras.models.load_model(
-        'd:\\Projects\\Python\\PycharmProjects\\DLIB_Pytorch\\MyNetworkTrain\\checkpoints\\weights-UL19_FC40-MobileNetV20.91.hdf5')
-    my_data = genfromtxt('d:\\Projects\\Python\\PycharmProjects\\celeba-dataset\\list_attr_celeba_test.csv',
-                         skip_header=1, delimiter=',', dtype=None, encoding=None)
-    confusion_matrix = np.zeros([my_data.shape[1], 4], dtype=int)
-    for mf in my_files:
-        #file_name = 'd:\\Projects\\Python\\PycharmProjects\\celeba-dataset\\img_align_celeba\\' + my_files[a];
-        file_name = 'd:\\Projects\\Python\\PycharmProjects\\celeba-dataset\\img_align_celeba\\' + mf;
-        print(mf)
-        img = cv2.imread(file_name)
-        img = cv2.resize(img, (224,224), interpolation=cv2.INTER_NEAREST) / 255
-        #img = cv2.flip(img, 1)
-        img = np.expand_dims(img, axis=0)
-        vv = model.predict(img)
-
-        vv = np.round(vv).astype('int')
-        #TP, TN, FN, FP
-        #import math
-        for b in range(vv.shape[1]):
-            if abs(my_data[a, b] - (vv[0, b])) < 0.001:
-                if my_data[a, b] > 0.001:
-                    #TP = 1
-                    confusion_matrix[b, 0] = confusion_matrix[b, 0] + 1
-                else:
-                    #TN = 0
-                    confusion_matrix[b, 1] = confusion_matrix[b, 1] + 1
-            if abs(my_data[a,b] - (vv[0,b])) > 0.001:
-                if my_data[a,b] > 0.001:
-                    #FN = 1
-                    confusion_matrix[b, 2] = confusion_matrix[b, 2] + 1
-                else:
-                    #FP = 1
-                    confusion_matrix[b, 3] = confusion_matrix[b, 3] + 1
-            #print(str(round(vv[0,b])) + " " + str(my_data[0,b]))
-        a = a + 1
-    print(confusion_matrix)
-    a = np.asarray(confusion_matrix)
-    np.savetxt("ul19_keras_confusion_matrix_40.csv", a, delimiter=",")
-
-
-if False:
-    for fn in my_files:
-        file_name = 'd:\\Projects\\Python\\PycharmProjects\\celeba-dataset\\img_align_celeba\\' + fn;
-        img = cv2.imread(file_name)
-
-
-if False:
-
-    img = cv2.imread('d:\\Projects\\Python\\PycharmProjects\\celeba-dataset\\img_align_celeba\\000007.jpg')
-    img = cv2.resize(img, (224,224)) / 255
-    img = np.expand_dims(img, axis=0)
-    vv = model.predict(img)
-    res = ("X5_o_Clock_Shadow", "Arched_Eyebrows", "Attractive", "Bags_Under_Eyes","Bald", "Bangs",
-             "Big_Lips", "Big_Nose", "Black_Hair", "Blond_Hair", "Blurry", "Brown_Hair", "Bushy_Eyebrows",
-             "Chubby", "Double_Chin", "Eyeglasses", "Goatee", "Gray_Hair", "Heavy_Makeup",
-             "High_Cheekbones", "Male", "Mouth_Slightly_Open", "Mustache", "Narrow_Eyes", "No_Beard",
-             "Oval_Face","Pale_Skin","Pointy_Nose", "Receding_Hairline",    "Rosy_Cheeks", "Sideburns",
-             "Smiling", "Straight_Hair", "Wavy_Hair", "Wearing_Earrings", "Wearing_Hat", "Wearing_Lipstick",
-             "Wearing_Necklace", "Wearing_Necktie","Young")
-    for a in range(40):
-        print(str(res[a]) + " " + str(vv[0,a]))

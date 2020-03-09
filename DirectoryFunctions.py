@@ -1,3 +1,7 @@
+# Author: Tomasz Hachaj
+# utility functions
+# import the necessary packages
+
 import numpy as np
 import math
 
